@@ -9,6 +9,7 @@ function request(params, isGetTonken) {
     globalData.requestQueue.push(params);
     return;
   }
+  console.log(config.domain + params.url);
   wx.request({
     url: config.domain + params.url, //接口请求地址
     data: params.data,
@@ -27,6 +28,7 @@ function request(params, isGetTonken) {
         }
 
       } else if (res.statusCode == 500) {
+        console.log(res);
         wx.showToast({
           title: "服务器出了点小差",
           icon: "none"
@@ -71,6 +73,7 @@ var getToken = function() {
   wx.login({
     success: res => {
       // 发送 res.code 到后台换取 openId, sessionKey, unionId
+      console.log(res);
       request({
         login: true,
         url: '/login?grant_type=mini_app',
@@ -78,6 +81,7 @@ var getToken = function() {
           principal: res.code
         },
         callBack: result => {
+          console.log(result);
           // 没有获取到用户昵称，说明服务器没有保存用户的昵称，也就是用户授权的信息并没有传到服务器
           if (!result.nickName) {
             updateUserInfo();
@@ -108,6 +112,7 @@ var getToken = function() {
 function updateUserInfo() {
   wx.getUserInfo({
     success: (res) => {
+      console.log(res);
       var userInfo = JSON.parse(res.rawData)
       request({
         url: "/p/user/setUserInfo",
